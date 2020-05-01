@@ -13,6 +13,7 @@ class SuggestionsOverlay extends Component {
     scrollFocusedIntoView: PropTypes.bool,
     isLoading: PropTypes.bool,
     onSelect: PropTypes.func,
+    addMention: PropTypes.func,
     ignoreAccents: PropTypes.bool,
 
     children: PropTypes.oneOfType([
@@ -106,6 +107,7 @@ class SuggestionsOverlay extends Component {
         renderSuggestion={renderSuggestion}
         suggestion={result}
         focused={isFocused}
+        addManually={this.select}
         onClick={() => this.select(result, queryInfo)}
         onMouseEnter={() => this.handleMouseEnter(index)}
       />

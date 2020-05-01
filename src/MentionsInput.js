@@ -24,7 +24,7 @@ import ReactDOM from 'react-dom'
 import SuggestionsOverlay from './SuggestionsOverlay'
 import { defaultStyle } from 'substyle'
 
-export const makeTriggerRegex = function(trigger, options = {}) {
+export const makeTriggerRegex = function (trigger, options = {}) {
   if (trigger instanceof RegExp) {
     return trigger
   } else {
@@ -35,16 +35,16 @@ export const makeTriggerRegex = function(trigger, options = {}) {
     // second capture group is for extracting the search query
     return new RegExp(
       `(?:^|\\s)(${escapedTriggerChar}([^${
-        allowSpaceInQuery ? '' : '\\s'
+      allowSpaceInQuery ? '' : '\\s'
       }${escapedTriggerChar}]*))$`
     )
   }
 }
 
-const getDataProvider = function(data, ignoreAccents) {
+const getDataProvider = function (data, ignoreAccents) {
   if (data instanceof Array) {
     // if data is an array, create a function to query that
-    return function(query, callback) {
+    return function (query, callback) {
       const results = []
       for (let i = 0, l = data.length; i < l; ++i) {
         const display = data[i].display || data[i].id
@@ -60,7 +60,7 @@ const getDataProvider = function(data, ignoreAccents) {
   }
 }
 
-const KEY = { TAB: 9, RETURN: 13, ESC: 27, UP: 38, DOWN: 40 }
+const KEY = { TAB: 9, RETURN: 13, ESC: 27, UP: 38, DOWN: 40, RIGHT: 26, LEFT: 27 }
 
 let isComposing = false
 
@@ -198,14 +198,14 @@ class MentionsInput extends React.Component {
 
       ...(!readOnly &&
         !disabled && {
-          onChange: this.handleChange,
-          onSelect: this.handleSelect,
-          onKeyDown: this.handleKeyDown,
-          onBlur: this.handleBlur,
-          onCompositionStart: this.handleCompositionStart,
-          onCompositionEnd: this.handleCompositionEnd,
-          onScroll: this.updateHighlighterScroll,
-        }),
+        onChange: this.handleChange,
+        onSelect: this.handleSelect,
+        onKeyDown: this.handleKeyDown,
+        onBlur: this.handleBlur,
+        onCompositionStart: this.handleCompositionStart,
+        onCompositionEnd: this.handleCompositionEnd,
+        onScroll: this.updateHighlighterScroll,
+      }),
     }
   }
 
@@ -561,29 +561,38 @@ class MentionsInput extends React.Component {
       ev.preventDefault()
     }
 
-    switch (ev.keyCode) {
-      case KEY.ESC: {
-        this.clearSuggestions()
-        return
-      }
-      case KEY.DOWN: {
-        this.shiftFocus(+1)
-        return
-      }
-      case KEY.UP: {
-        this.shiftFocus(-1)
-        return
-      }
-      case KEY.RETURN: {
-        this.selectFocused()
-        return
-      }
-      case KEY.TAB: {
-        this.selectFocused()
-        return
-      }
-      default: {
-        return
+    if (this.props.onKeyDownOverride) {
+      this.props.onKeyDownOverride(ev, {
+        clearSuggestions: this.clearSuggestions,
+        shiftFocus: this.shiftFocus,
+        selectFocused: this.selectFocused,
+      })
+      return
+    } else {
+      switch (ev.keyCode) {
+        case KEY.ESC: {
+          this.clearSuggestions()
+          return
+        }
+        case KEY.DOWN: {
+          this.shiftFocus(+1)
+          return
+        }
+        case KEY.UP: {
+          this.shiftFocus(-1)
+          return
+        }
+        case KEY.RETURN: {
+          this.selectFocused()
+          return
+        }
+        case KEY.TAB: {
+          this.selectFocused()
+          return
+        }
+        default: {
+          return
+        }
       }
     }
   }
@@ -716,11 +725,11 @@ class MentionsInput extends React.Component {
       if (
         allowSuggestionsAboveCursor &&
         viewportRelative.top -
-          highlighter.scrollTop +
-          suggestions.offsetHeight >
-          viewportHeight &&
+        highlighter.scrollTop +
+        suggestions.offsetHeight >
+        viewportHeight &&
         suggestions.offsetHeight <
-          caretOffsetParentRect.top - caretHeight - highlighter.scrollTop
+        caretOffsetParentRect.top - caretHeight - highlighter.scrollTop
       ) {
         position.top = top - suggestions.offsetHeight - caretHeight
       } else {
@@ -973,7 +982,7 @@ class MentionsInput extends React.Component {
 
   isLoading = () => {
     let isLoading = false
-    React.Children.forEach(this.props.children, function(child) {
+    React.Children.forEach(this.props.children, function (child) {
       isLoading = isLoading || (child && child.props.isLoading)
     })
     return isLoading
@@ -1026,9 +1035,9 @@ const styled = defaultStyle(
         // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
         ...(isMobileSafari
           ? {
-              marginTop: 1,
-              marginLeft: -3,
-            }
+            marginTop: 1,
+            marginLeft: -3,
+          }
           : null),
       },
     },
