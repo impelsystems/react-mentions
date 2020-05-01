@@ -568,7 +568,7 @@ class MentionsInput extends React.Component {
         shiftFocus: this.shiftFocus,
         selectFocused: this.selectFocused,
         clickFocused: this.clickFocused,
-        state: this.state
+        state: { ...this.state }
       })
       return
     } else {

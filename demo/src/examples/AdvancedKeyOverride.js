@@ -21,11 +21,48 @@ const style = merge({}, defaultStyle, {
   },
 })
 
-function Advanced({ value, data, onChange, onBlur, onKeyDownOverride, onAdd }) {
+const KEY = { TAB: 9, RETURN: 13, ESC: 27, UP: 38, DOWN: 40, RIGHT: 39, LEFT: 27 }
+const onKeyDownOverride = (ev, { clearSuggestions, shiftFocus, selectFocused, state }) => {
+  
+  console.log("onKeyDownOverride", ev.keyCode, state)
+
+  switch (ev.keyCode) {
+    case KEY.ESC: {
+      clearSuggestions()
+      return
+    }
+    case KEY.DOWN: {
+      shiftFocus(+1)
+      return
+    }
+    case KEY.UP: {
+      shiftFocus(-1)
+      return
+    }
+    case KEY.RIGHT: {
+      console.log("Right clicked, do something custom")
+      return
+    }
+    case KEY.RETURN: {
+      selectFocused()
+      return
+    }
+    case KEY.TAB: {
+      selectFocused()
+      return
+    }
+    default: {
+      return
+    }
+  }
+
+}
+
+function AdvancedKeyOverride({ value, data, onChange, onBlur, onAdd }) {
   let inputEl = React.createRef()
   return (
     <div className="advanced">
-      <h3>Advanced options</h3>
+      <h3>Key press override in suggestions</h3>
 
       <MentionsInput
         value={value}
@@ -64,4 +101,4 @@ export default compose(
       }
     },
   })
-)(Advanced)
+)(AdvancedKeyOverride)

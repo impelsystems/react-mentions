@@ -13,6 +13,7 @@ import SingleLine from './SingleLine'
 import SingleLineIgnoringAccents from './SingleLineIgnoringAccents'
 import SuggestionPortal from './SuggestionPortal'
 import BottomGuard from "./BottomGuard";
+import AdvancedKeyOverride from './AdvancedKeyOverride'
 
 const users = [
   {
@@ -58,6 +59,7 @@ export default function Examples() {
         <SingleLineIgnoringAccents data={users} />
         <Scrollable data={users} />
         <Advanced data={users} />
+        <AdvancedKeyOverride data={users} />
         <ExperimentalCutCopyPaste data={users} />
         <CssModules data={users} />
         <AsyncGithubUserMentions data={users} />
