@@ -93,5 +93,8 @@
   },
   "release": {
     "verifyConditions": "condition-circle"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  }  
 }
