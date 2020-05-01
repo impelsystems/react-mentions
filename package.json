@@ -1,7 +1,7 @@
 {
-  "name": "react-mentions",
+  "name": "@impelsys/react-mentions",
   "version": "0.0.0-development",
-  "description": "React mentions input",
+  "description": "React mentions input, fork from react-mentions with some additional customisation functionality for custom add mention calls, and suggestion keyboard override.",
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",
   "files": [
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/signavio/react-mentions.git"
+    "url": "https://github.com/impelsystems/react-mentions.git"
   },
   "keywords": [
     "react",
@@ -34,9 +34,9 @@
   "author": "Jan-Felix Schwarz",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/signavio/react-mentions/issues"
+    "url": "https://github.com/impelsystems/react-mentions/issues"
   },
-  "homepage": "https://github.com/signavio/react-mentions",
+  "homepage": "https://github.com/impelsystems/react-mentions",
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
