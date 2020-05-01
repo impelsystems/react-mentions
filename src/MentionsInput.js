@@ -77,6 +77,7 @@ const propTypes = {
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
+  onKeyDownOverride: PropTypes.func,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
@@ -566,6 +567,7 @@ class MentionsInput extends React.Component {
         clearSuggestions: this.clearSuggestions,
         shiftFocus: this.shiftFocus,
         selectFocused: this.selectFocused,
+        clickFocused: this.clickFocused
       })
       return
     } else {
@@ -623,6 +625,12 @@ class MentionsInput extends React.Component {
     this.setState({
       focusIndex: 0,
     })
+  }
+
+  clickFocused = () => {
+    const suggestion = this.state.suggestions[this.state.focusIndex]
+    console.log("clickFocused", suggestion)
+    suggestion.click()
   }
 
   handleBlur = ev => {
