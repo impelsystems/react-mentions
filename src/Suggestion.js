@@ -25,6 +25,7 @@ class Suggestion extends Component {
     ]).isRequired,
     renderSuggestion: PropTypes.func,
     addManually: PropTypes.func,
+    stateMutator: PropTypes.object,
     focused: PropTypes.bool,
   }
 
@@ -39,7 +40,7 @@ class Suggestion extends Component {
   }
 
   renderContent() {
-    let { query, renderSuggestion, suggestion, index, focused, addManually } = this.props
+    let { query, renderSuggestion, suggestion, index, focused, addManually, stateMutator } = this.props
 
     let display = this.getDisplay()
     let highlightedDisplay = this.renderHighlightedDisplay(display, query)
@@ -51,7 +52,8 @@ class Suggestion extends Component {
         highlightedDisplay,
         index,
         focused, 
-        addManually
+        addManually, 
+        stateMutator
       )
     }
 

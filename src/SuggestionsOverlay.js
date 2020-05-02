@@ -15,6 +15,7 @@ class SuggestionsOverlay extends Component {
     onSelect: PropTypes.func,
     addMention: PropTypes.func,
     ignoreAccents: PropTypes.bool,
+    stateMutator: PropTypes.object,
 
     children: PropTypes.oneOfType([
       PropTypes.element,
@@ -105,9 +106,10 @@ class SuggestionsOverlay extends Component {
         index={index}
         ignoreAccents={ignoreAccents}
         renderSuggestion={renderSuggestion}
+        stateMutator={this.props.stateMutator}
         suggestion={result}
         focused={isFocused}
-        addManually={this.select}
+        addManually={(customResult) => this.select(customResult, queryInfo)}
         onClick={() => this.select(result, queryInfo)}
         onMouseEnter={() => this.handleMouseEnter(index)}
       />

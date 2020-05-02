@@ -260,6 +260,10 @@ class MentionsInput extends React.Component {
           this.suggestionsRef = el
         }}
         suggestions={this.state.suggestions}
+        stateMutator={{
+          state: { ...this.state },
+          mutateState: (updater, callback) => this.setState(updater, callback)
+        }}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
         onMouseEnter={focusIndex =>
@@ -573,6 +577,7 @@ class MentionsInput extends React.Component {
         clearSuggestions: this.clearSuggestions,
         shiftFocus: this.shiftFocus,
         selectFocused: this.selectFocused,
+        addMention: this.addMention,
         state: { ...this.state },
         mutateState: (updater, callback) => this.setState(updater, callback)
       })
