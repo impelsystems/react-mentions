@@ -78,9 +78,11 @@ const propTypes = {
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
   onKeyDownOverride: PropTypes.func,
+  keyDownOverrideTriggerCodes: PropTypes.object,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
+  onClearSuggestions: PropTypes.func,
   suggestionsPortalHost:
     typeof Element === 'undefined'
       ? PropTypes.any
@@ -550,6 +552,7 @@ class MentionsInput extends React.Component {
   handleKeyDown = ev => {
     // do not intercept key events if the suggestions overlay is not shown
     const suggestionsCount = countSuggestions(this.state.suggestions)
+    const { keyDownOverrideTriggerCodes } = this.props
 
     const suggestionsComp = this.suggestionsRef
     if (suggestionsCount === 0 || !suggestionsComp) {
@@ -558,17 +561,21 @@ class MentionsInput extends React.Component {
       return
     }
 
-    if (Object.values(KEY).indexOf(ev.keyCode) >= 0) {
+    const keyCodes = Object.assign({}, KEY, keyDownOverrideTriggerCodes || {})
+    if (Object.values(keyCodes).indexOf(ev.keyCode) >= 0) {
       ev.preventDefault()
     }
 
-    if (this.props.onKeyDownOverride) {
+    if (this.props.onKeyDownOverride 
+      && keyDownOverrideTriggerCodes 
+      && Object.values(keyDownOverrideTriggerCodes).indexOf(ev.keyCode) >= 0) {
       this.props.onKeyDownOverride(ev, {
         clearSuggestions: this.clearSuggestions,
         shiftFocus: this.shiftFocus,
         selectFocused: this.selectFocused,
         clickFocused: this.clickFocused,
-        state: { ...this.state }
+        state: { ...this.state },
+        mutateState: (updater, callback) => this.setState(updater, callback)
       })
       return
     } else {
@@ -856,6 +863,8 @@ class MentionsInput extends React.Component {
       suggestions: {},
       focusIndex: 0,
     })
+    if (this.props.onClearSuggestions)
+      this.props.onClearSuggestions()
   }
 
   queryData = (
