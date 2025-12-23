@@ -20,7 +20,7 @@ import {
 
 import Highlighter from './Highlighter'
 import PropTypes from 'prop-types'
-import ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 import SuggestionsOverlay from './SuggestionsOverlay'
 import { defaultStyle } from 'substyle'
 
@@ -279,7 +279,7 @@ class MentionsInput extends React.Component {
       </SuggestionsOverlay>
     )
     if (this.props.suggestionsPortalHost) {
-      return ReactDOM.createPortal(
+      return createPortal(
         suggestionsNode,
         this.props.suggestionsPortalHost
       )
@@ -671,8 +671,8 @@ class MentionsInput extends React.Component {
       return
     }
 
-    let suggestions = ReactDOM.findDOMNode(this.suggestionsRef)
-    let highlighter = ReactDOM.findDOMNode(this.highlighterRef)
+    let suggestions = this.suggestionsRef
+    let highlighter = this.highlighterRef
     // first get viewport-relative position (highlighter is offsetParent of caret):
     const caretOffsetParentRect = highlighter.getBoundingClientRect()
     const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
@@ -767,7 +767,7 @@ class MentionsInput extends React.Component {
       return
     }
     const input = this.inputRef
-    const highlighter = ReactDOM.findDOMNode(this.highlighterRef)
+    const highlighter = this.highlighterRef
     highlighter.scrollLeft = input.scrollLeft
     highlighter.scrollTop = input.scrollTop
     highlighter.height = input.height
