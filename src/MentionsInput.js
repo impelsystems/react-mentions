@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import React, { Children, forwardRef } from 'react'
 import {
   applyChangeToValue,
   countSuggestions,
@@ -22,7 +22,7 @@ import Highlighter from './Highlighter'
 import PropTypes from 'prop-types'
 import { createPortal } from 'react-dom'
 import SuggestionsOverlay from './SuggestionsOverlay'
-import { defaultStyle } from 'substyle'
+import { defaultStyle } from './useStyles'
 
 export const makeTriggerRegex = function (trigger, options = {}) {
   if (trigger instanceof RegExp) {
@@ -236,11 +236,17 @@ class MentionsInput extends React.Component {
 
   setInputRef = el => {
     this.inputRef = el
-    const { inputRef } = this.props
+    const { inputRef, forwardedRef } = this.props
     if (typeof inputRef === 'function') {
       inputRef(el)
     } else if (inputRef) {
       inputRef.current = el
+    }
+    // Also handle the forwarded ref from forwardRef
+    if (typeof forwardedRef === 'function') {
+      forwardedRef(el)
+    } else if (forwardedRef) {
+      forwardedRef.current = el
     }
   }
 
@@ -1067,4 +1073,13 @@ const styled = defaultStyle(
   })
 )
 
-export default styled(MentionsInput)
+const StyledMentionsInput = styled(MentionsInput)
+
+// Use forwardRef to properly forward refs to the underlying input/textarea element
+const ForwardedMentionsInput = forwardRef((props, ref) => (
+  <StyledMentionsInput {...props} forwardedRef={ref} />
+))
+
+ForwardedMentionsInput.displayName = 'MentionsInput'
+
+export default ForwardedMentionsInput
