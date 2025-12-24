@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
+import { defaultStyle } from './useStyles'
 
 import { 
   getSubstringIndex,
@@ -30,7 +30,8 @@ class Suggestion extends Component {
   }
 
   render() {
-    let rest = omit(this.props, 'style', keys(Suggestion.propTypes))
+    // Exclude forwardedRef to prevent it from being spread onto DOM elements
+    let rest = omit(this.props, 'style', 'forwardedRef', keys(Suggestion.propTypes))
 
     return (
       <li {...rest} {...this.props.style}>

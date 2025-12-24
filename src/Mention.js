@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
+import { defaultStyle } from './useStyles'
 
 const styled = defaultStyle({
   fontWeight: 'inherit',

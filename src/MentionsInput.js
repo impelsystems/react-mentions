@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import React, { Children, forwardRef } from 'react'
 import {
   applyChangeToValue,
   countSuggestions,
@@ -20,9 +20,9 @@ import {
 
 import Highlighter from './Highlighter'
 import PropTypes from 'prop-types'
-import ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 import SuggestionsOverlay from './SuggestionsOverlay'
-import { defaultStyle } from 'substyle'
+import { defaultStyle } from './useStyles'
 
 export const makeTriggerRegex = function (trigger, options = {}) {
   if (trigger instanceof RegExp) {
@@ -191,7 +191,8 @@ class MentionsInput extends React.Component {
     let { readOnly, disabled, style } = this.props
 
     // pass all props that we don't use through to the input control
-    let props = omit(this.props, 'style', keys(propTypes))
+    // Also exclude forwardedRef to prevent it from being spread onto DOM elements
+    let props = omit(this.props, 'style', 'forwardedRef', keys(propTypes))
 
     return {
       ...props,
@@ -236,11 +237,17 @@ class MentionsInput extends React.Component {
 
   setInputRef = el => {
     this.inputRef = el
-    const { inputRef } = this.props
+    const { inputRef, forwardedRef } = this.props
     if (typeof inputRef === 'function') {
       inputRef(el)
     } else if (inputRef) {
       inputRef.current = el
+    }
+    // Also handle the forwarded ref from forwardRef
+    if (typeof forwardedRef === 'function') {
+      forwardedRef(el)
+    } else if (forwardedRef) {
+      forwardedRef.current = el
     }
   }
 
@@ -279,7 +286,7 @@ class MentionsInput extends React.Component {
       </SuggestionsOverlay>
     )
     if (this.props.suggestionsPortalHost) {
-      return ReactDOM.createPortal(
+      return createPortal(
         suggestionsNode,
         this.props.suggestionsPortalHost
       )
@@ -671,8 +678,8 @@ class MentionsInput extends React.Component {
       return
     }
 
-    let suggestions = ReactDOM.findDOMNode(this.suggestionsRef)
-    let highlighter = ReactDOM.findDOMNode(this.highlighterRef)
+    let suggestions = this.suggestionsRef
+    let highlighter = this.highlighterRef
     // first get viewport-relative position (highlighter is offsetParent of caret):
     const caretOffsetParentRect = highlighter.getBoundingClientRect()
     const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
@@ -767,7 +774,7 @@ class MentionsInput extends React.Component {
       return
     }
     const input = this.inputRef
-    const highlighter = ReactDOM.findDOMNode(this.highlighterRef)
+    const highlighter = this.highlighterRef
     highlighter.scrollLeft = input.scrollLeft
     highlighter.scrollTop = input.scrollTop
     highlighter.height = input.height
@@ -952,10 +959,11 @@ class MentionsInput extends React.Component {
     const mentionsChild = Children.toArray(this.props.children)[childIndex]
     const {
       markup,
-      displayTransform,
+      displayTransform: displayTransformProp,
       appendSpaceOnAdd,
       onAdd,
     } = mentionsChild.props
+    const displayTransform = displayTransformProp || ((id, display) => display || id)
 
     const start = mapPlainTextIndex(value, config, querySequenceStart, 'START')
     const end = start + querySequenceEnd - querySequenceStart
@@ -1067,4 +1075,13 @@ const styled = defaultStyle(
   })
 )
 
-export default styled(MentionsInput)
+const StyledMentionsInput = styled(MentionsInput)
+
+// Use forwardRef to properly forward refs to the underlying input/textarea element
+const ForwardedMentionsInput = forwardRef((props, ref) => (
+  <StyledMentionsInput {...props} forwardedRef={ref} />
+))
+
+ForwardedMentionsInput.displayName = 'MentionsInput'
+
+export default ForwardedMentionsInput

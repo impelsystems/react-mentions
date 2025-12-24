@@ -1,6 +1,6 @@
-import React, { Component, Children } from 'react'
+import React, { Component, Children, forwardRef } from 'react'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
+import { defaultStyle } from './useStyles'
 
 import {
   iterateMentionsMarkup,
@@ -159,6 +159,7 @@ class Highlighter extends Component {
     return (
       <div
         {...style}
+        ref={this.props.containerRef}
         style={{
           ...inputStyle,
           ...style.style,
@@ -226,4 +227,8 @@ const styled = defaultStyle(
   })
 )
 
-export default styled(Highlighter)
+const StyledHighlighter = styled(Highlighter)
+
+export default forwardRef((props, ref) => (
+  <StyledHighlighter {...props} containerRef={ref} />
+))

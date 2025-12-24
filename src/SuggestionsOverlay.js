@@ -1,6 +1,6 @@
-import React, { Component, Children } from 'react'
+import React, { Component, Children, forwardRef } from 'react'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
+import { defaultStyle } from './useStyles'
 
 import { countSuggestions } from './utils'
 import Suggestion from './Suggestion'
@@ -61,7 +61,7 @@ class SuggestionsOverlay extends Component {
     }
 
     return (
-      <div {...style} onMouseDown={onMouseDown}>
+      <div {...style} ref={this.props.containerRef} onMouseDown={onMouseDown}>
         <ul
           ref={el => {
             this.suggestionsRef = el
@@ -158,4 +158,8 @@ const styled = defaultStyle(({ position }) => ({
   },
 }))
 
-export default styled(SuggestionsOverlay)
+const StyledSuggestionsOverlay = styled(SuggestionsOverlay)
+
+export default forwardRef((props, ref) => (
+  <StyledSuggestionsOverlay {...props} containerRef={ref} />
+))
