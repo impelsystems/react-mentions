@@ -191,7 +191,8 @@ class MentionsInput extends React.Component {
     let { readOnly, disabled, style } = this.props
 
     // pass all props that we don't use through to the input control
-    let props = omit(this.props, 'style', keys(propTypes))
+    // Also exclude forwardedRef to prevent it from being spread onto DOM elements
+    let props = omit(this.props, 'style', 'forwardedRef', keys(propTypes))
 
     return {
       ...props,
@@ -958,10 +959,11 @@ class MentionsInput extends React.Component {
     const mentionsChild = Children.toArray(this.props.children)[childIndex]
     const {
       markup,
-      displayTransform,
+      displayTransform: displayTransformProp,
       appendSpaceOnAdd,
       onAdd,
     } = mentionsChild.props
+    const displayTransform = displayTransformProp || ((id, display) => display || id)
 
     const start = mapPlainTextIndex(value, config, querySequenceStart, 'START')
     const end = start + querySequenceEnd - querySequenceStart

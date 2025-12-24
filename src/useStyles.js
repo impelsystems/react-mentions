@@ -39,7 +39,8 @@ export function defaultStyle(defaultStyle, getModifiers) {
     const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component'
     
     const WithDefaultStyle = forwardRef((props, ref) => {
-      const { style, className, classNames, ...rest } = props
+      // Destructure ref-related props separately to prevent them from being spread onto DOM elements
+      const { style, className, classNames, forwardedRef, containerRef, ...rest } = props
       
       // Compute modifiers if getModifiers function is provided
       const modifiers = getModifiers ? getModifiers(rest) : undefined
@@ -61,7 +62,24 @@ export function defaultStyle(defaultStyle, getModifiers) {
         return base(modifiers, computedDefaultStyle)
       }, [style, className, classNames, propsDecorator, modifiers, computedDefaultStyle])
       
-      return <WrappedComponent ref={ref} {...rest} style={substyle} />
+      // Only pass forwardedRef and containerRef if they are defined
+      // This prevents them from being passed to components that don't need them
+      const refProps = {}
+      if (forwardedRef !== undefined) {
+        refProps.forwardedRef = forwardedRef
+      }
+      if (containerRef !== undefined) {
+        refProps.containerRef = containerRef
+      }
+      
+      return (
+        <WrappedComponent 
+          ref={ref} 
+          {...rest} 
+          style={substyle} 
+          {...refProps}
+        />
+      )
     })
     
     WithDefaultStyle.displayName = `withDefaultStyle(${wrappedComponentName})`
